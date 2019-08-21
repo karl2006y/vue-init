@@ -1,29 +1,7 @@
-# bootstrap_elementui_router_fontawesome
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+載入套件
+[VueStar](https://github.com/OYsun/VueStar)
+[animate.css](https://github.com/daneden/animate.css)
+[bootstrap4](https://bootstrap.hexschool.com/)
+[awesomeFont](https://fontawesome.com/icons?d=gallery&m=free)
+[Vuelidate](https://github.com/vuelidate/vuelidate)
+[element-ui](https://element.eleme.cn/#/zh-CN/component/installation)
