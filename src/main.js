@@ -7,6 +7,7 @@ Vue.config.productionTip = false
 //import 表單驗證 Vuelidate
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
+//https://github.com/vuelidate/vuelidate
 
 //import bootstrap
 import 'bootstrap' // Import js file
