@@ -12,6 +12,13 @@ Vue.use(Vuelidate)
 import 'bootstrap' // Import js file
 import 'bootstrap/dist/css/bootstrap.min.css' // Import css file
 
+//import VueStar
+import VueStar from 'vue-star'
+Vue.component('VueStar', VueStar)
+// <vue-star animate="animated bounceIn" color="#F05654">
+//   <i slot="icon" class="fa fa-heart"></i>
+// </vue-star>
+
 new Vue({
   router,
   render: h => h(App)
