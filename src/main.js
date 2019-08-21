@@ -8,6 +8,10 @@ Vue.config.productionTip = false
 import Vuelidate from 'vuelidate'
 Vue.use(Vuelidate)
 
+//import bootstrap
+import 'bootstrap' // Import js file
+import 'bootstrap/dist/css/bootstrap.min.css' // Import css file
+
 new Vue({
   router,
   render: h => h(App)
