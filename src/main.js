@@ -26,31 +26,31 @@ import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
 
 //防止未授權登入
-router.beforeEach((to, from, next) => {
-  if (to.name == '登入') {
-    next()
-  } else {
-    axios
-      .get('https://www.ibunny.com.tw/Identity/Account/Login')
-      .then(response => {
-        if (response.data.indexOf('Hello') == -1) {
-          // 授權失敗跳轉至登入頁面
-          // alert('授權失敗')
-          next({ name: '登入', query: { next: encodeURI(to.name) } })
-        } else {
-          // 授權確認
-          // alert('授權確認')
-          if (to.name == 'home') {
-            // alert('跳轉控制面板')
-            next({ name: '控制面板' })
-          } else {
-            // alert('放行')
-            next()
-          }
-        }
-      })
-  }
-})
+// router.beforeEach((to, from, next) => {
+//   if (to.name == '登入') {
+//     next()
+//   } else {
+//     axios
+//       .get('https://www.ibunny.com.tw/Identity/Account/Login')
+//       .then(response => {
+//         if (response.data.indexOf('Hello') == -1) {
+//           // 授權失敗跳轉至登入頁面
+//           // alert('授權失敗')
+//           next({ name: '登入', query: { next: encodeURI(to.name) } })
+//         } else {
+//           // 授權確認
+//           // alert('授權確認')
+//           if (to.name == 'home') {
+//             // alert('跳轉控制面板')
+//             next({ name: '控制面板' })
+//           } else {
+//             // alert('放行')
+//             next()
+//           }
+//         }
+//       })
+//   }
+// })
 
 new Vue({
   router,

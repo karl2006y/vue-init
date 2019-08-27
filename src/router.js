@@ -16,6 +16,26 @@ export default new Router({
           path: 'dashboard',
           name: '控制面板',
           component: () => import('./views/Dashboard/index')
+        },
+        {
+          path: 'search',
+          name: '查詢進出紀錄',
+          component: () => import('./views/Search/index')
+        },
+        {
+          path: 'permission',
+          name: '權限管控',
+          component: () => import('./views/Permission/index')
+        },
+        {
+          path: 'DeviceList',
+          name: '資訊列表',
+          component: () => import('./views/DeviceList/index')
+        },
+        {
+          path: 'fix',
+          name: '維修通報',
+          component: () => import('./views/Fix/index')
         }
       ]
     },

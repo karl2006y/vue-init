@@ -1,4 +1,88 @@
 <div class="layout">
-  Layout
-  <router-view></router-view>
+  <el-container>
+    <el-aside
+      style="overflow-x: hidden;"
+      :width="isCollapse?'80px':'300px'"
+      :style="!isCollapse?'150px':'width:80px'"
+    >
+      <el-menu
+        :default-active="$route.name"
+        style="height:100vh; width:100%"
+        :collapse-transition="false"
+        :collapse="isCollapse"
+      >
+        <!-- 手刻漢堡icon與叉叉 -->
+        <el-menu-item index="hamburger" @click="isCollapse=!isCollapse">
+          <div v-if="isCollapse" style="display: flex;flex-direction: column;">
+            <i class="el-icon-minus leftNavIcon"></i>
+            <i class="el-icon-minus leftNavIcon" style="margin-top: -27px"></i>
+            <i class="el-icon-minus leftNavIcon" style="margin-top: -27px"></i>
+          </div>
+          <i v-else class="el-icon-close leftNavIcon"></i>
+        </el-menu-item>
+        <!-- 控制面板 -->
+        <el-menu-item index="控制面板" @click="changePage('控制面板')">
+          <i class="el-icon-odometer leftNavIcon"></i>
+          <span slot="title">控制面板</span>
+        </el-menu-item>
+
+        <!-- 設備管理 -->
+        <el-submenu index="設備管理">
+          <template slot="title">
+            <i class="el-icon-set-up leftNavIcon"></i>
+            <span slot="title">設備管理</span>
+          </template>
+          <el-menu-item-group>
+            <span v-if="isCollapse" slot="title">
+              <i class="text-danger el-icon-set-up leftNavIcon"></i>
+              設備管理</span
+            >
+            <el-menu-item @click="changePage('資訊列表')" index="資訊列表">
+              <span><b>資訊列表</b></span>
+            </el-menu-item>
+            <el-menu-item @click="changePage('維修通報')" index="維修通報"
+              ><span><b>維修通報</b></span></el-menu-item
+            >
+          </el-menu-item-group>
+        </el-submenu>
+
+        <!-- 查詢進出紀錄 -->
+        <el-menu-item index="查詢進出紀錄" @click="changePage('查詢進出紀錄')">
+          <i class="el-icon-search leftNavIcon"></i>
+          <span slot="title">查詢進出紀錄</span>
+        </el-menu-item>
+
+        <!-- 權限管控 -->
+        <el-menu-item index="權限管控" @click="changePage('權限管控')">
+          <i class="el-icon-user-solid leftNavIcon"></i>
+          <span slot="title">權限管控</span>
+        </el-menu-item>
+
+        <el-menu-item
+          style="margin-top:calc(100vh - 343px)"
+          index="登出"
+          @click="logout"
+        >
+          <i
+            class="ml-2 fas fa-sign-out-alt leftNavIcon"
+            style="font-size: 25px;"
+          ></i>
+          <span slot="title">登出</span>
+        </el-menu-item>
+      </el-menu>
+    </el-aside>
+    <el-container>
+      <el-header class="border-bottom text-center">
+        <div class="my-3">
+          <span>
+            {{ currentPageName }}
+          </span>
+        </div>
+      </el-header>
+      <el-main> <router-view></router-view></el-main>
+      <el-footer class="text-center" style="height:35px">
+        Copyright © 2019 邦尼管理顧問有限公司 版權所有
+      </el-footer>
+    </el-container>
+  </el-container>
 </div>
