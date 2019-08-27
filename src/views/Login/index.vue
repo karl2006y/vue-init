@@ -4,9 +4,9 @@ export default {
   data() {
     return {
       form: {
-        username: "admin@test.com",
+        username: "",
         password: {
-          text: "Aa3345678?1",
+          text: "",
           show: false
         }
       },
@@ -20,6 +20,11 @@ export default {
     this.getToken("https://www.ibunny.com.tw/api/XsrfToken").then(res => {
       this.token = res;
     });
+
+    if (localStorage.getItem("username")) {
+      this.form.username = localStorage.getItem("username");
+      this.rememberAccount = true;
+    }
   },
   watch: {
     loginStatus(val) {
@@ -31,6 +36,13 @@ export default {
         }
       } else if (val == "登入失敗") {
         this.loginLoading = false;
+      }
+    },
+    rememberAccount(val) {
+      if (val) {
+        localStorage.setItem("username", this.form.username);
+      } else {
+        localStorage.removeItem("username");
       }
     }
   },

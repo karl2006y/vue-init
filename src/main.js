@@ -27,23 +27,28 @@ Vue.use(VueAxios, axios)
 
 //防止未授權登入
 router.beforeEach((to, from, next) => {
-  if (to.name == 'home') {
-    next({ name: '登入' })
-  } else if (to.name != '登入') {
-    // 登入授權檢查
+  if (to.name == '登入') {
+    next()
+  } else {
     axios
       .get('https://www.ibunny.com.tw/Identity/Account/Login')
       .then(response => {
         if (response.data.indexOf('Hello') == -1) {
           // 授權失敗跳轉至登入頁面
+          // alert('授權失敗')
           next({ name: '登入', query: { next: encodeURI(to.name) } })
-        } else if (response.data.indexOf('Hello') != -1) {
+        } else {
           // 授權確認
-          next()
+          // alert('授權確認')
+          if (to.name == 'home') {
+            // alert('跳轉控制面板')
+            next({ name: '控制面板' })
+          } else {
+            // alert('放行')
+            next()
+          }
         }
       })
-  } else {
-    next()
   }
 })
 
