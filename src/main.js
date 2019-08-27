@@ -20,6 +20,33 @@ Vue.component('VueStar', VueStar)
 //   <i slot="icon" class="fa fa-heart"></i>
 // </vue-star>
 
+//import axios
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+Vue.use(VueAxios, axios)
+
+//防止未授權登入
+router.beforeEach((to, from, next) => {
+  if (to.name == 'home') {
+    next({ name: '登入' })
+  } else if (to.name != '登入') {
+    // 登入授權檢查
+    axios
+      .get('https://www.ibunny.com.tw/Identity/Account/Login')
+      .then(response => {
+        if (response.data.indexOf('Hello') == -1) {
+          // 授權失敗跳轉至登入頁面
+          next({ name: '登入', query: { next: encodeURI(to.name) } })
+        } else if (response.data.indexOf('Hello') != -1) {
+          // 授權確認
+          next()
+        }
+      })
+  } else {
+    next()
+  }
+})
+
 new Vue({
   router,
   render: h => h(App)
