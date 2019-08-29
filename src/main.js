@@ -25,6 +25,10 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 Vue.use(VueAxios, axios)
 
+//載入全域變數
+import global_ from './components/Global.vue' //引用檔案
+Vue.prototype.GLOBAL = global_ //掛載到Vue例項上面
+
 //防止未授權登入
 // router.beforeEach((to, from, next) => {
 //   if (to.name == '登入') {

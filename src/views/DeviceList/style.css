@@ -1,3 +1,5 @@
-.deviceList{
-  
+.deviceList {
+}
+.el-table .danger-row {
+  background: red;
 }

@@ -1,3 +1,57 @@
-<div class="deviceList">
-  DeviceList
+<div class="deviceList p-3">
+  <div v-for="item in mList"></div>
+  <el-table
+    :data="mList"
+    style="width: 100%"
+    :row-class-name="tableRowClassName"
+  >
+    <el-table-column prop="mId" label="設備名稱"> </el-table-column>
+    <el-table-column label="設備屬性">
+      <template slot-scope="scope">
+        <span>{{ scope.row.type | deviceType }}</span>
+      </template>
+    </el-table-column>
+    <el-table-column label="建置時間">
+      <template slot-scope="scope">
+        <span>{{ new Date(scope.row.createdTime).toLocaleDateString() }}</span>
+        <br />
+        <span>{{ new Date(scope.row.createdTime).toLocaleTimeString() }}</span>
+      </template>
+    </el-table-column>
+    <el-table-column label="使用年限">
+      <template slot-scope="scope">
+        <div class="w-100">
+          <span class="ml-3"> {{ scope.row.yearsOfDeviceLife }} (年) </span>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column label="保養週期">
+      <template slot-scope="scope">
+        <div class="w-100">
+          <span class="ml-2"> {{ scope.row.daysOfCycle }} (天) </span>
+        </div>
+      </template>
+    </el-table-column>
+    <el-table-column prop="member" label="保養人員"> </el-table-column>
+    <el-table-column label="設備位置">
+      <template slot-scope="scope">
+        <el-popover
+          placement="left"
+          title="電子地圖"
+          width="550"
+          trigger="hover"
+        >
+          <span slot="reference">{{ scope.row.full }}</span>
+          <machinesmap
+            class="mt-1"
+            :picUrl="apiUrl+'/' +scope.row.mapImagePath"
+            :weight="500"
+            :pointSize="10"
+            :address="{x: scope.row.x,y: scope.row.y}"
+            :status=" scope.row.status"
+          ></machinesmap>
+        </el-popover>
+      </template>
+    </el-table-column>
+  </el-table>
 </div>

@@ -1,10 +1,234 @@
 <div class="dashboard">
-  <el-row>
-    <el-col :span="12">
-      <div class="bg-success left">1</div>
+  <el-drawer
+    title="電子地圖"
+    :visible.sync="mapShow.show"
+    direction="rtl"
+    size="60%"
+  >
+    <div class="w-100 h-100 bg-light" style="padding-left:20%;padding-top:10%">
+      <machinesmap
+        :picUrl="apiUrl+ mapShow.item.mapImagePath"
+        :weight="500"
+        :pointSize="10"
+        :address="{x: mapShow.item.x,y: mapShow.item.y}"
+        :status=" mapShow.item.status"
+      ></machinesmap>
+      <div class="mt-3">
+        <span> 設備位置：{{ mapShow.item.full }} </span>
+      </div>
+    </div>
+  </el-drawer>
+  <el-row class="w-100">
+    <el-col :span="17">
+      <div class=" left">
+        <div class="w-100" style="display:flex">
+          <div class="mr-1">
+            <span><b>設備運作狀況</b></span>
+          </div>
+          <div class="ml-3">
+            <div
+              class="py-1 px-4 form-check form-check-inline border border-success rounded"
+            >
+              <input
+                v-model="statusList"
+                class="form-check-input"
+                type="checkbox"
+                id="inlineCheckbox1"
+                value="success"
+              />
+              <label class="text-success form-check-label" for="inlineCheckbox1"
+                >正常運轉</label
+              >
+            </div>
+            <div
+              class="py-1 px-4 form-check form-check-inline border border-warning rounded"
+            >
+              <input
+                v-model="statusList"
+                class="form-check-input"
+                type="checkbox"
+                id="inlineCheckbox2"
+                value="warning"
+              />
+              <label class="text-warning form-check-label" for="inlineCheckbox2"
+                >設備維修</label
+              >
+            </div>
+            <div
+              class="py-1 px-4 form-check form-check-inline border border-danger rounded"
+            >
+              <input
+                v-model="statusList"
+                class="form-check-input"
+                type="checkbox"
+                id="inlineCheckbox3"
+                value="danger"
+              />
+              <label class="text-danger form-check-label" for="inlineCheckbox3"
+                >設備異常</label
+              >
+            </div>
+          </div>
+        </div>
+        <hr />
+        <div id="deviceStatusList">
+          <div
+            v-if="statusList.indexOf(item.status)!=-1"
+            id="deviceStatusListItem"
+            v-for="item in mList"
+          >
+            <el-tooltip
+              class="d-md-block d-none"
+              effect="dark"
+              placement="left"
+            >
+              <div slot="content">
+                <span>設備ID:{{ item.mId }}</span>
+                <br />
+                <span v-if="item.status=='success'" class="statusSuccess"
+                  >狀態：正常
+                </span>
+                <span v-if="item.status=='warning'" class="statusWarning"
+                  >狀態：維護中
+                </span>
+                <span v-if="item.status=='danger'" class="statusDanger"
+                  >狀態：異常停止
+                </span>
+                <br />
+                <span>設備位置：{{ item.full }}</span>
+
+                <br />
+                <span>狀態備註：{{ item.note }}</span>
+                <br />
+                <br v-if="item.status=='warning'" />
+                <a
+                  v-if="item.status=='warning'"
+                  class="btn btn-warning btn-sm"
+                  href="javascript:;"
+                  >已處理</a
+                >
+                <p></p>
+                <machinesmap
+                  :picUrl="apiUrl+item.mapImagePath"
+                  :weight="500"
+                  :pointSize="10"
+                  :address="{x:item.x,y:item.y}"
+                  :status="item.status"
+                ></machinesmap>
+              </div>
+              <div
+                class="border text-center rounded"
+                :class="{
+            'border-success':item.status=='success',
+            'border-warning':item.status=='warning',
+            'border-danger':item.status=='danger'
+          }"
+              >
+                <i
+                  v-if="item.type=='camera'"
+                  class="el-icon-video-camera-solid"
+                ></i>
+                <i v-if="item.type=='cardReader'" class="el-icon-bank-card"></i>
+                <i v-if="item.type=='button'" class="el-icon-thumb"></i>
+                <span> {{ item.mId }} </span>
+
+                <div class="d-inline">
+                  <span v-if="item.status=='success'" class="statusSuccess"
+                    >●</span
+                  >
+                  <span
+                    v-if="item.status=='warning'"
+                    class=" animated infinite flash slower statusWarning"
+                    >●
+                  </span>
+                  <span
+                    v-if="item.status=='danger'"
+                    class=" animated infinite flash slow statusDanger"
+                    >●
+                  </span>
+                </div>
+              </div>
+            </el-tooltip>
+          </div>
+        </div>
+      </div>
     </el-col>
-    <el-col :span="12">
-      <div class="bg-info right">2</div>
+    <el-col :span="7">
+      <div class="right border-left ">
+        <div class="mt-1 text-center">
+          <h5><b>即時出入狀況</b></h5>
+          <br />
+          <div
+            class="py-1 px-4 form-check form-check-inline border border-success rounded"
+          >
+            <input
+              v-model="logsCheckList"
+              class="form-check-input"
+              type="checkbox"
+              id="rightInlineCheckbox1"
+              value="success"
+            />
+            <label
+              class="text-success form-check-label"
+              for="rightInlineCheckbox1"
+              >驗證成功</label
+            >
+          </div>
+          <div
+            class="py-1 px-4 form-check form-check-inline border border-danger rounded"
+          >
+            <input
+              v-model="logsCheckList"
+              class="form-check-input"
+              type="checkbox"
+              id="rightInlineCheckbox2"
+              value="danger"
+            />
+            <label
+              class="text-danger form-check-label"
+              for="rightInlineCheckbox2"
+              >驗證失敗</label
+            >
+          </div>
+        </div>
+        <hr />
+        <el-collapse>
+          <el-collapse-item
+            v-for="item in showLogList"
+            v-if="logsCheckList.indexOf(item.status)!=-1 || logsCheckList.length==0"
+            class="bg-danger my-2"
+            :name="item.id"
+          >
+            <div
+              class="border rounded"
+              :class="item.status=='danger'?'statusDanger border-danger':item.status=='success'?'statusSuccess border-success':''"
+              style="width:90%;font-size:1.2VW"
+              slot="title"
+            >
+              <div class="ml-1">
+                ●
+                {{ item.mId }}
+                {{new Date(item.createdTime).toLocaleString()}}
+              </div>
+            </div>
+            <div>
+              <span>設備名稱：{{ item.mId }}</span
+              ><br />
+              <small class="text-muted">設備位置：{{ item.full }}</small>
+              <machinesmap
+                class="mt-1"
+                :picUrl="apiUrl+'/' +item.imagePath"
+                :weight="300"
+                :pointSize="10"
+                :address="{x: item.x,y: item.y}"
+                :status=" item.status"
+              ></machinesmap>
+              <!-- <small class="text-muted">{{ item.createdTime }}</small> -->
+              <hr />
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+      </div>
     </el-col>
   </el-row>
 </div>

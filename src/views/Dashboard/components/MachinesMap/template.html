@@ -1,0 +1,23 @@
+<div class="machinesMap">
+  <el-image
+    :style="'width: '+weight+'px;'"
+    :src="picUrl"
+    fit="contain"
+    ref="pic"
+  ></el-image>
+  <div
+    :style="'top: '+fixedXY.y+';left:'+fixedXY.x+ ';height: '+pointSize+'px;width: '+pointSize+'px;'"
+    v-if="status=='success'"
+    class="statusSuccess "
+  ></div>
+  <div
+    :style="'top: '+fixedXY.y+';left:'+fixedXY.x+ ';height: '+pointSize+'px;width: '+pointSize+'px;'"
+    v-if="status=='warning'"
+    class=" animated infinite flash slower statusWarning "
+  ></div>
+  <div
+    :style="'top: '+fixedXY.y+';left:'+fixedXY.x+ ';height: '+pointSize+'px;width: '+pointSize+'px;'"
+    v-if="status=='danger'"
+    class=" animated infinite flash slow statusDanger "
+  ></div>
+</div>

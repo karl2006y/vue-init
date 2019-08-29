@@ -1,0 +1,28 @@
+.machinesMap {
+  position: relative;
+}
+.statusSuccess {
+  background-color: #67c23a;
+  position: absolute;
+  padding: 0px;
+  border-radius: 30px;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.12);
+}
+.statusWarning {
+  background-color: #dbb400;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0px;
+  border-radius: 30px;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.12);
+}
+.statusDanger {
+  background-color: #fd5354;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
+  border-radius: 30px;
+  box-shadow: 0 5px 8px rgba(0, 0, 0, 0.12);
+}
