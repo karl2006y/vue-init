@@ -1,9 +1,142 @@
 <div class="deviceList p-3">
-  <div v-for="item in mList"></div>
+  <!-- 功能按鈕 -->
+  <div class="w-100">
+    <el-row>
+      <!-- 關鍵字搜尋 -->
+      <el-col :span="20">
+        <el-input
+          ref="keywordInput"
+          v-show="search.show"
+          class="mx-3 w-75 animated slideInLeft"
+          placeholder="關鍵字搜索"
+          v-model="search.text"
+          clearable
+        >
+        </el-input>
+        <el-badge
+          :value="mList.filter(searchKeywordHandler).length"
+          class="item"
+        >
+          <el-button
+            :class="search.show?'animated slideInLeft':''"
+            @click="search.show=!search.show;"
+            type="warning"
+            icon="el-icon-search"
+            circle
+          ></el-button>
+        </el-badge>
+      </el-col>
+      <el-col :span="4">
+        <div class="text-right">
+          <!-- 新增設備開關 -->
+          <adddevice></adddevice>
+        </div>
+      </el-col>
+    </el-row>
+  </div>
+  <!-- 設備詳細資料頁面 -->
+  <el-dialog
+    :visible.sync="deviceDetail.show"
+    width="70%"
+    :before-close="closeDetailDialogHandler"
+  >
+    <span slot="title"
+      ><b>{{ deviceDetail.data.mId }}詳細資料</b></span
+    >
+    <div style="padding:0 50px">
+      <el-row :gutter="20">
+        <el-col :span="10">
+          <div
+            style="display: flex; flex-direction: column;justify-content:center"
+          >
+            <!-- 設備屬性 -->
+            <span>設備屬性：{{ deviceDetail.data.type | deviceType }}</span
+            ><br />
+            <!-- 建置時間 -->
+            <span
+              >建置時間：{{new Date(deviceDetail.data.createdTime).toLocaleString() }}</span
+            ><br />
+            <!-- 使用年限 -->
+            <span>使用年限：{{ deviceDetail.data.yearsOfDeviceLife }} (年)</span
+            ><br />
+            <!-- 目前狀態 -->
+            <span
+              >目前狀態：<span :class="'status-'+deviceDetail.data.status"
+                >●</span
+              >{{ deviceDetail.data.status | deviceStatus }}</span
+            ><br />
+            <el-divider></el-divider>
+            <!-- 負責廠商 -->
+            <span>負責廠商：{{ deviceDetail.data.vendor }} </span><br />
+            <!-- 廠商聯絡人 -->
+            <span>廠商聯絡人：{{ deviceDetail.data.vendorContact }} </span
+            ><br />
+            <!-- 廠商聯絡電話 -->
+            <span>廠商聯絡電話：{{ deviceDetail.data.vendorPhone }} </span
+            ><br />
+          </div>
+        </el-col>
+        <el-col :span="14">
+          <span>設備位置：{{ deviceDetail.data.full }}</span>
+          <div style="margin-top:-38px" class="mb-3 w-100 text-right">
+            <editdevice
+              v-if="deviceDetail.show"
+              :deviceDetail="deviceDetail"
+              class="d-inline mx-2"
+            ></editdevice>
+            <el-button
+              size="small"
+              type="danger"
+              icon="el-icon-delete"
+              plain
+              round
+              @click="deleteDevice"
+              >設備刪除</el-button
+            >
+          </div>
+          <machinesmap
+            v-if="deviceDetail.show"
+            class="mt-5"
+            :picUrl="apiUrl+'/' +deviceDetail.data.mapImagePath"
+            weight="100%"
+            :pointSize="10"
+            :address="{x: deviceDetail.data.x,y: deviceDetail.data.y}"
+            :status=" deviceDetail.data.status"
+          ></machinesmap>
+        </el-col>
+      </el-row>
+      <div
+        id="actionFlexInDetail"
+        class="mt-3"
+        style="display: flex;justify-content:flex-start"
+      >
+        <devicefixform
+          v-if="deviceDetail.show"
+          class="mb-2 mr-3"
+          :deviceDetail="deviceDetail"
+        ></devicefixform>
+
+        <devicemaintenances
+          style="width: 100%"
+          v-if="deviceDetail.show"
+          :id="deviceDetail.data.id"
+        ></devicemaintenances>
+      </div>
+
+      <!-- <span slot="footer" class="dialog-footer">
+      <el-button @click="deviceDetail.show = false">取 消</el-button>
+      <el-button type="warning" @click="deviceDetail.show = false"
+        >確 定</el-button
+      >
+    </span> -->
+    </div>
+  </el-dialog>
+  <!-- 設備表單 -->
   <el-table
-    :data="mList"
+    :data="mList.filter(searchKeywordHandler)"
     style="width: 100%"
     :row-class-name="tableRowClassName"
+    @row-click="rowClickHandler"
   >
     <el-table-column prop="mId" label="設備名稱"> </el-table-column>
     <el-table-column label="設備屬性">
@@ -11,9 +144,13 @@
         <span>{{ scope.row.type | deviceType }}</span>
       </template>
     </el-table-column>
-    <el-table-column label="建置時間">
+    <el-table-column prop="createdTime" sortable label="建置時間">
       <template slot-scope="scope">
-        <span>{{ new Date(scope.row.createdTime).toLocaleDateString() }}</span>
+        <div class="ml-2">
+          <span
+            >{{ new Date(scope.row.createdTime).toLocaleDateString() }}</span
+          >
+        </div>
         <br />
         <span>{{ new Date(scope.row.createdTime).toLocaleTimeString() }}</span>
       </template>
@@ -32,7 +169,13 @@
         </div>
       </template>
     </el-table-column>
-    <el-table-column prop="member" label="保養人員"> </el-table-column>
+    <el-table-column label="保養廠商">
+      <template slot-scope="scope">
+        <div class="w-100">
+          <span class="ml-2"> {{ scope.row.vendor }} </span>
+        </div>
+      </template>
+    </el-table-column>
     <el-table-column label="設備位置">
       <template slot-scope="scope">
         <el-popover
@@ -45,7 +188,7 @@
           <machinesmap
             class="mt-1"
             :picUrl="apiUrl+'/' +scope.row.mapImagePath"
-            :weight="500"
+            weight="500px"
             :pointSize="10"
             :address="{x: scope.row.x,y: scope.row.y}"
             :status=" scope.row.status"

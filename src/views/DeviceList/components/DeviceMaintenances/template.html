@@ -1,0 +1,126 @@
+<div class="deviceMaintenances">
+  <el-button
+    v-if="maintenancesList.length==0"
+    @click="getDeviceMaintenances"
+    type="warning"
+    plain
+    >保養/維修明細</el-button
+  >
+
+  <div v-if="maintenancesList!='無保養/維修紀錄'&&maintenancesList.length!=0">
+    <p></p>
+    <h6>保養明細</h6>
+    <el-table
+      :data="maintenancesList.filter((item)=>item.status=='保養')"
+      style="width: 100%"
+    >
+      <!-- 保養狀態 -->
+      <el-table-column label="保養狀態" width="80">
+        <template slot-scope="scope">
+          {{ scope.row.complete ? '完成' : '尚未完成' }}
+        </template>
+      </el-table-column>
+      <!-- 保養日期 -->
+      <el-table-column label="保養日期" width="200">
+        <template slot-scope="scope">
+          <div>
+            {{ new Date(scope.row.registrationTime).toLocaleString() }}
+          </div>
+        </template>
+      </el-table-column>
+      <!-- 保養完成日期 -->
+      <el-table-column label="保養完成日期" width="210">
+        <template slot-scope="scope">
+          <div v-if="scope.row.complete">
+            <div>
+              {{ new Date(scope.row.maintenanceTime).toLocaleString() }}
+            </div>
+          </div>
+          <div class="ml-5" v-else>
+            X
+          </div>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="保養人">
+        <template slot-scope="scope">
+          <div>名字：{{ scope.row.maintenanceName }}</div>
+          <div>連絡電話：{{ scope.row.vendorPhone }}</div>
+          <div>所屬單位：{{ scope.row.vendor }}</div>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <p></p>
+    <!-- <el-divider style="background-color: black;"></el-divider> -->
+
+    <h6>維修明細</h6>
+    <!-- 維修 -->
+    <el-table
+      :data="maintenancesList.filter((item)=>item.status=='維修')"
+      style="width: 100%"
+    >
+      <!-- 維修狀態 -->
+      <el-table-column label="維修狀態" width="80">
+        <template slot-scope="scope">
+          {{ scope.row.complete ? '完成' : '尚未完成' }}
+        </template>
+      </el-table-column>
+      <!-- 維修日期 -->
+      <el-table-column label="報修日期" width="110">
+        <template slot-scope="scope">
+          <div class="ml-1">
+            {{ new Date(scope.row.registrationTime).toLocaleDateString() }}
+          </div>
+
+          <div>
+            {{ new Date(scope.row.registrationTime).toLocaleTimeString() }}
+          </div>
+        </template>
+      </el-table-column>
+      <!-- 維修完成日期 -->
+      <el-table-column label="維修完成日期" width="120">
+        <template slot-scope="scope">
+          <div v-if="scope.row.complete">
+            <div class="ml-1">
+              {{ new Date(scope.row.maintenanceTime).toLocaleDateString() }}
+            </div>
+
+            <div>
+              {{ new Date(scope.row.maintenanceTime).toLocaleTimeString() }}
+            </div>
+          </div>
+          <div class="text-center" v-else>
+            X
+          </div>
+        </template>
+      </el-table-column>
+      <!-- 報修人 -->
+      <el-table-column label="報修人" prop="status">
+        <template slot-scope="scope">
+          <div>名字：{{ scope.row.name }}</div>
+          <div>連絡電話：{{ scope.row.phone }}</div>
+          <div>電子信箱：{{ scope.row.email }}</div>
+          <div>所屬單位：{{ scope.row.organization }}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="維修人">
+        <template slot-scope="scope">
+          <div v-if="scope.row.complete">
+            <div>名字：{{ scope.row.maintenanceName }}</div>
+            <div>連絡電話：{{ scope.row.vendorPhone }}</div>
+            <div>所屬單位：{{ scope.row.vendor }}</div>
+          </div>
+          <div class="ml-3" v-else>
+            X
+          </div>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+  <div v-if="maintenancesList=='無保養/維修紀錄'&&maintenancesList.length!=0">
+    <span>
+      無保養/維修紀錄
+    </span>
+  </div>
+</div>

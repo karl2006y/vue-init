@@ -1,0 +1,10 @@
+.editDevice {
+}
+#mapDiv {
+  position: relative;
+  -webkit-user-select: none;
+}
+#devicePlace {
+  position: absolute;
+  -webkit-user-select: none;
+}

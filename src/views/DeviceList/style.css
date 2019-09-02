@@ -1,5 +1,22 @@
 .deviceList {
+  overflow-y: scroll;
+  height: calc(100vh - 110px);
 }
 .el-table .danger-row {
-  background: red;
+  background: #ff000012;
+}
+.el-table .warning-row {
+  background: #ffff0012;
+}
+.status-success {
+  color: #67c23a;
+}
+.status-warning {
+  color: #dbb400;
+}
+.status-danger {
+  color: #fd5354;
+}
+span {
+  font-size: 1.3vw;
 }

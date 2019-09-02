@@ -33,6 +33,11 @@ export default new Router({
           component: () => import('./views/DeviceList/index')
         },
         {
+          path: 'DeviceList/:id',
+          name: '資訊列表/單台顯示',
+          component: () => import('./views/DeviceList/index')
+        },
+        {
           path: 'fix',
           name: '維修通報',
           component: () => import('./views/Fix/index')

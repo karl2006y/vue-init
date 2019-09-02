@@ -8,7 +8,7 @@ export default {
       x: Number,
       y: Number
     },
-    weight: Number,
+    weight: String,
     pointSize: Number
   },
   data() {
@@ -41,16 +41,17 @@ export default {
       if (this.$refs.pic == undefined) {
         this.fixedXY = { x: "-5px", y: "-5px" };
       } else {
+        const imgwidth =
+          this.$refs.pic.$el.clientWidth == 0
+            ? Number(this.weight.replace("px", ""))
+            : this.$refs.pic.$el.clientWidth;
         this.fixedXY = {
           x:
-            (
-              this.address.x * 0.01 * this.weight -
-              this.pointSize / 2
-            ).toString() + "px",
+            (this.address.x * 0.01 * imgwidth - this.pointSize / 2).toString() +
+            "px",
           y:
             (
-              ((this.address.y * 0.01 * this.weight) /
-                this.$refs.pic.imageWidth) *
+              ((this.address.y * 0.01 * imgwidth) / this.$refs.pic.imageWidth) *
                 this.$refs.pic.imageHeight -
               this.pointSize / 2
             ).toString() + "px"

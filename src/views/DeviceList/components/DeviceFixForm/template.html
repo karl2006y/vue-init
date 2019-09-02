@@ -1,0 +1,121 @@
+<div class="deviceFixForm">
+  <el-button @click="show =true" type="danger" icon="el-icon-warning-outline">
+    填寫報修單</el-button
+  >
+  <!-- 設備詳細資料頁面 -->
+  <el-dialog
+    element-loading-text="正在送出報修單"
+    v-loading="loading"
+    :visible.sync="show"
+    width="60%"
+    append-to-body
+  >
+    <span slot="title"
+      ><i class="el-icon-warning-outline"></i
+      >{{ deviceDetail.data.mId }}報修單</span
+    >
+    <el-steps :active="currentStep" finish-status="success">
+      <el-step title="確認設備訊息"></el-step>
+      <el-step title="填寫報修人資料"></el-step>
+      <el-step title="完成報修"></el-step>
+    </el-steps>
+    <hr />
+    <p></p>
+    <div v-if="currentStep==0">
+      <el-row :gutter="20">
+        <el-col :span="10">
+          <div>
+            <!-- 設備屬性 -->
+            <span>設備屬性：{{ deviceDetail.data.type | deviceType }}</span
+            ><br />
+            <!-- 建置時間 -->
+            <span
+              >建置時間：{{new Date(deviceDetail.data.createdTime).toLocaleString() }}</span
+            ><br />
+            <!-- 使用年限 -->
+            <span>使用年限：{{ deviceDetail.data.yearsOfDeviceLife }} (年)</span
+            ><br />
+            <!-- 目前狀態 -->
+            <span
+              >目前狀態：<span :class="'status-'+deviceDetail.data.status"
+                >●</span
+              >{{ deviceDetail.data.status | deviceStatus }}</span
+            ><br />
+            <hr />
+            <!-- 負責廠商 -->
+            <span>負責廠商：{{ deviceDetail.data.vendor }} </span><br />
+            <!-- 廠商聯絡人 -->
+            <span>廠商聯絡人：{{ deviceDetail.data.vendorContact }} </span
+            ><br />
+            <!-- 廠商聯絡電話 -->
+            <span>廠商聯絡電話：{{ deviceDetail.data.vendorPhone }} </span
+            ><br />
+            <hr />
+            <span> 維修備註： </span><br />
+            <el-input
+              v-model="form.note"
+              placeholder="請填寫維修備註"
+            ></el-input>
+          </div>
+        </el-col>
+        <el-col :span="14">
+          <span>設備位置：{{ deviceDetail.data.full }}</span>
+          <machinesmap
+            class="mt-1"
+            :picUrl="apiUrl+'/' +deviceDetail.data.mapImagePath"
+            weight="100%"
+            :pointSize="10"
+            :address="{x: deviceDetail.data.x,y: deviceDetail.data.y}"
+            :status=" deviceDetail.data.status"
+          ></machinesmap>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="w-100" v-if="currentStep==1">
+      <div class="mt-5 w-50 mx-auto">
+        <el-form ref="form" :model="form" label-width="150px">
+          <el-form-item label="報修人 名字">
+            <el-input v-model="form.name"></el-input>
+          </el-form-item>
+          <el-form-item label="報修人 連絡電話">
+            <el-input v-model="form.phone"></el-input>
+          </el-form-item>
+          <el-form-item label="報修人 電子信箱">
+            <el-tooltip
+              popper-class="bg-danger"
+              :value="!emailTest && form.email.length != 0"
+              manual
+              content="信箱格式錯誤！"
+              placement="right"
+            >
+              <el-input v-model="form.email"></el-input>
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="報修人 所屬單位">
+            <el-input v-model="form.organization"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+    </div>
+    <div v-if="currentStep==2">
+      <span>點擊完成，送出報修單</span>
+    </div>
+
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="currentStep=0;show = false">取 消</el-button>
+      <el-button v-if="currentStep==2" type="danger" @click="sendFixForm"
+        >完成</el-button
+      >
+      <el-button
+        :disabled="form.name==''||form.phone==''||form.email==''||form.organization==''||!emailTest"
+        v-if="currentStep==1"
+        type="danger"
+        @click="currentStep++"
+        >下一步</el-button
+      >
+      <el-button v-if="currentStep==0" type="danger" @click="currentStep++"
+        >下一步</el-button
+      >
+    </span>
+  </el-dialog>
+</div>

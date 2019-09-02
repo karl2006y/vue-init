@@ -1,0 +1,296 @@
+<div class="addDevice">
+  <el-tooltip
+    class="item"
+    effect="dark"
+    content="新增設備"
+    placement="left-start"
+  >
+    <el-button
+      @click="show=true"
+      type="success"
+      icon="el-icon-plus"
+      circle
+    ></el-button>
+  </el-tooltip>
+  <el-dialog
+    v-loading="loading"
+    :visible.sync="show"
+    width="70%"
+    append-to-body
+  >
+    <span slot="title"
+      ><i class="el-icon-circle-plus-outline"></i> <b>新增設備</b></span
+    >
+    <div style="padding:0 50px">
+      <el-row :gutter="20">
+        <el-col :span="11">
+          <div>
+            <!-- 設備名稱 -->
+            <span>設備名稱：</span>
+            <el-input
+              style="width:calc(95% - 9.4vw)"
+              v-model=" deviceDetail.data.mId"
+              placeholder="請填寫設備名稱"
+              :clearable="true"
+              size="small"
+            ></el-input>
+            <br />
+            <!-- MAC Address -->
+            <span>設備MAC：</span>
+            <el-input
+              style="width:calc(95% - 9.5vw)"
+              v-model=" deviceDetail.data.macAddress"
+              placeholder="請填寫MAC Address"
+              :clearable="true"
+              size="small"
+            ></el-input>
+            <br />
+            <!-- 設備屬性 -->
+            <span>設備屬性：</span>
+            <el-select v-model="deviceDetail.data.type" placeholder="請選擇">
+              <el-option
+                key="cardReader"
+                label="讀卡機"
+                value="cardReader"
+              ></el-option>
+              <el-option
+                key="button"
+                label="緊急按鈕"
+                value="button"
+              ></el-option>
+              <el-option key="camera" label="人臉辨識" value="camera">
+              </el-option>
+            </el-select>
+            <p></p>
+            <!-- 建置時間 -->
+            <span>建置時間：</span>
+            <el-date-picker
+              style="width:9.75vw"
+              v-model="deviceDetail.data.createdTime"
+              type="date"
+              placeholder="選擇日期"
+              :clearable="false"
+              :editable="false"
+              size="small"
+            >
+            </el-date-picker>
+            <el-time-picker
+              style="width:7.222vw"
+              v-model="deviceDetail.data.createdTime"
+              placeholder="選擇時間"
+              format="HH:mm"
+              :editable="false"
+              :clearable="false"
+              size="small"
+            >
+            </el-time-picker>
+            <p></p>
+            <!-- 使用年限 -->
+            <span>使用年限： </span>
+            <el-input-number
+              v-model="deviceDetail.data.yearsOfDeviceLife"
+              :min="1"
+              label="設備使用年限"
+            ></el-input-number>
+            （年）
+            <p></p>
+            <!-- 維護週期 -->
+            <span>使用年限： </span>
+            <el-input-number
+              v-model="deviceDetail.data.daysOfCycle"
+              :min="1"
+              label="設備維護週期"
+            ></el-input-number>
+            （天）
+            <p></p>
+            <!-- 目前狀態 -->
+            <span
+              >目前狀態：<span :class="'status-'+deviceDetail.data.status"
+                >●</span
+              >{{ deviceDetail.data.status | deviceStatus }}</span
+            ><br />
+            <hr />
+            <!-- 負責廠商 -->
+            <span style="margin-left:2.6vw">負責廠商：</span>
+            <el-input
+              style="width:calc(95% - 9.1vw)"
+              v-model=" deviceDetail.data.vendor"
+              placeholder="請填寫維修/保養之廠商"
+              :clearable="true"
+              size="small"
+            ></el-input>
+            <br />
+            <!-- 廠商聯絡人 -->
+            <span style="margin-left:1.3vw">廠商聯絡人：</span>
+            <el-input
+              style="width:calc(95% - 9.1vw)"
+              v-model="deviceDetail.data.vendorContact"
+              placeholder="請填寫維修/保養之廠商"
+              :clearable="true"
+              size="small"
+            ></el-input>
+            <br />
+            <!-- 廠商聯絡電話 -->
+            <span>廠商聯絡電話：</span>
+            <el-input
+              style="width:calc(95% - 9.1vw)"
+              v-model="deviceDetail.data.vendorPhone"
+              placeholder="請填寫保養/維修之廠商"
+              :clearable="true"
+              size="small"
+            ></el-input>
+
+            <br />
+          </div>
+        </el-col>
+        <el-col :span="13">
+          <span>設備位置：</span>
+          <el-input
+            style="width:calc(83% - 90px)"
+            v-model="deviceDetail.data.full"
+            placeholder="請填寫設備位置"
+            :clearable="true"
+            size="small"
+          ></el-input>
+          <p></p>
+          <div style="display: flex">
+            <div
+              :class="addMap.show==false?'animated faster slideInLeft':''"
+              v-if="!addMap.show"
+            >
+              <span>選擇樓層平面圖：</span>
+              <el-select
+                style="width:calc(100% - 10.4vw - 5px)"
+                v-model="deviceDetail.data.mapId"
+                placeholder="請選擇平面圖"
+              >
+                <el-option
+                  v-for="item in mapsList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </div>
+            <div
+              style="display: flex"
+              class="animated faster"
+              :class="addMap.show!=undefined?addMap.show==true?'slideInRight':'slideInLeft':''"
+            >
+              <el-tooltip effect="dark" content="新增平面圖" placement="left">
+                <el-button
+                  v-if="!addMap.show || addMap.mode=='新增'"
+                  style="padding: 11px;"
+                  @click="addMap.show=!addMap.show;addMap.mode='新增'"
+                  class="ml-3 mt-1"
+                  type="danger"
+                  :icon="addMap.show==true?'el-icon-minus':'el-icon-plus'"
+                  circle
+                ></el-button>
+              </el-tooltip>
+              <el-tooltip effect="dark" content="編輯平面圖" placement="right">
+                <el-button
+                  v-if="!addMap.show || addMap.mode=='編輯'"
+                  @click="addMap.show=!addMap.show;addMap.mode='編輯';addMap.Image=mapImgUrl;addMap.name=mapImg.name"
+                  class="ml-3 mt-1"
+                  type="success"
+                  :icon="addMap.show==true?'el-icon-minus':'el-icon-edit-outline'"
+                  circle
+                ></el-button>
+              </el-tooltip>
+              <span class="mt-2 ml-1" v-if="addMap.show">
+                {{ addMap.mode }}平面圖</span
+              >
+            </div>
+          </div>
+
+          <p></p>
+          <div
+            id="mapDiv"
+            :class="addMap.show==false?'animated fadeIn ':''"
+            v-if="!addMap.show"
+          >
+            <el-image
+              @click="getClickXY"
+              @load="getMapImgWH"
+              :src="mapImgUrl"
+              fit="contain"
+            ></el-image>
+            <span
+              class="animated flash infinite"
+              :class="'status-'+deviceDetail.data.status"
+              :style="'left:'+mapXY.x+';top: '+mapXY.y"
+              id="devicePlace"
+              >●</span
+            >
+          </div>
+          <div
+            class="border p-2"
+            :class="addMap.show==false?'animated fadeIn ':''"
+            v-if="addMap.show"
+          >
+            <span style="margin-left:calc(1.3vw * 3)">樓層名稱：</span>
+            <el-input
+              style="width:calc(83% - 90px)"
+              v-model="addMap.name"
+              placeholder="請填寫樓層平面圖之名稱"
+              :clearable="true"
+              size="small"
+            ></el-input>
+            <p></p>
+            <span>選擇平面圖檔案：</span>
+
+            <div v-if="addMap.Image">
+              <el-image
+                style="width:100%;max-width:350px"
+                :src="addMap.Image"
+                fit="contain"
+              ></el-image
+              ><br />
+              <el-button
+                @click="$refs.mapUpload.value='';addMap.Image=''"
+                size="mini"
+                >重新選擇</el-button
+              >
+              <el-button
+                v-if="addMap.mode=='新增'"
+                :disabled="addMap.Image==''||addMap.name==''"
+                type="danger"
+                @click="postMap()"
+                size="mini"
+                >上傳</el-button
+              >
+              <el-button
+                v-if="addMap.mode=='編輯'"
+                :disabled="addMap.Image==''||addMap.name==''"
+                type="success"
+                @click="editMap()"
+                size="mini"
+                >編輯完成</el-button
+              >
+            </div>
+            <input
+              v-show="addMap.Image==''"
+              ref="mapUpload"
+              type="file"
+              style="width:calc(83% - 90px)"
+              @change="uploadMap"
+              :clearable="true"
+              accept="image/*"
+            />
+          </div>
+
+          <p></p>
+        </el-col>
+      </el-row>
+    </div>
+
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="show = false">取 消</el-button>
+      <el-button :disabled="!canSend" type="danger" @click="sendAddForm"
+        >完成</el-button
+      >
+    </span>
+  </el-dialog>
+</div>
