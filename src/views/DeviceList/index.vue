@@ -84,8 +84,6 @@ export default {
       })
         .then(() => {
           const URL = this.apiUrl + "api/Devices/" + this.deviceDetail.data.id;
-          console.log(URL);
-
           this.axios.delete(URL).then(response => {
             this.$message({
               type: "success",

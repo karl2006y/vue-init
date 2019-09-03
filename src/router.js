@@ -39,7 +39,7 @@ export default new Router({
         },
         {
           path: 'fix',
-          name: '維修通報',
+          name: '保養/維修回報單',
           component: () => import('./views/Fix/index')
         }
       ]

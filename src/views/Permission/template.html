@@ -1,3 +1,160 @@
-<div class="permission">
-  Permission
+<div class="permission p-3">
+  <!-- 功能按鈕 -->
+  <div class="w-100">
+    <el-row>
+      <!-- 關鍵字搜尋 -->
+      <el-col :span="18">
+        <el-input
+          ref="keywordInput"
+          v-show="search.show"
+          class="mx-3 w-75 animated slideInLeft"
+          placeholder="關鍵字搜索"
+          v-model="search.text"
+          clearable
+        >
+        </el-input>
+        <el-badge
+          :value="staffsList.filter(searchKeywordHandler).length"
+          class="item"
+        >
+          <el-button
+            :class="search.show?'animated slideInLeft':''"
+            @click="search.show=!search.show;"
+            type="warning"
+            icon="el-icon-search"
+            circle
+          ></el-button>
+        </el-badge>
+      </el-col>
+      <el-col :span="6">
+        <div class="text-right">
+          <!-- 新增設備開關 -->
+          <addstaff></addstaff>
+          <!-- <adddevice></adddevice> -->
+        </div>
+      </el-col>
+    </el-row>
+  </div>
+  <!-- {{ staffsList }} -->
+  <hr />
+  <div class="w-100 staffsList">
+    <el-table
+      class="mx-auto"
+      v-loading="loading"
+      :data="staffsList.filter(searchKeywordHandler)"
+      style="width: 90%"
+    >
+      <el-table-column prop="faceImagePath" label="相片">
+        <template slot-scope="scope">
+          <div class="text-left">
+            <el-image
+              style="height:100px;width:80px"
+              shape="square"
+              :src="apiUrl + scope.row.faceImagePath"
+              fit="cover"
+            ></el-image>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column prop="number" label="員工編號"></el-table-column>
+      <el-table-column prop="department" label="部門"></el-table-column>
+      <el-table-column prop="name" label="姓名"></el-table-column>
+      <el-table-column prop="cardNumber" label="通行卡編號"></el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <staffpermission
+            v-if="loading==false&&staffsList.length!=0"
+            :staffInfo="scope.row"
+            class="d-inline mr-3"
+          ></staffpermission>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="帳戶編輯"
+            placement="top"
+          >
+            <el-button
+              @click="editHandler(scope.row)"
+              type="warning"
+              icon="el-icon-edit"
+              circle
+            ></el-button>
+          </el-tooltip>
+          <el-tooltip
+            class="item"
+            effect="dark"
+            content="帳戶刪除"
+            placement="bottom"
+          >
+            <el-button
+              @click="deleteStaffHandler(scope.row)"
+              type="danger"
+              icon="el-icon-delete"
+              circle
+            ></el-button>
+          </el-tooltip>
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
+  <!-- 編輯頁面 -->
+  <el-dialog v-loading="loading" :visible.sync="editForm.show" width="30%">
+    <span slot="title"
+      ><b><i class="el-icon-edit"></i> {{ editForm.data.name }} 編輯</b></span
+    >
+    <div style="padding:0 50px">
+      <el-form ref="form" label-width="85px">
+        <el-form-item label="姓名">
+          <el-input v-model="editForm.data.name"></el-input>
+        </el-form-item>
+        <el-form-item label="員工編號">
+          <el-input v-model="editForm.data.number"></el-input>
+        </el-form-item>
+        <el-form-item label="部門">
+          <el-input v-model="editForm.data.department"></el-input>
+        </el-form-item>
+        <el-form-item label="通行卡編號">
+          <el-input v-model="editForm.data.cardNumber"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <div
+            v-if="editForm.data.faceImagePath && editForm.data.faceImagePath!=''"
+            class="text-center"
+          >
+            <el-image
+              style="width:80%"
+              shape="square"
+              :src="editForm.data.faceImagePath.indexOf('base64')!=-1?editForm.data.faceImagePath:apiUrl + editForm.data.faceImagePath"
+              fit="cover"
+            ></el-image>
+            <div style=" margin-top:-22px">
+              <el-button
+                @click="editForm.data.faceImagePath=''"
+                style="width:80%;"
+                size="mini"
+                type="info"
+                >重新上傳</el-button
+              >
+            </div>
+          </div>
+          <div
+            v-show="!(editForm.data.faceImagePath&& editForm.data.faceImagePath!='')"
+          >
+            <input
+              ref="Upload"
+              type="file"
+              style="width:100%"
+              @change="uploadFaceImg"
+              :clearable="true"
+              accept="image/*"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="editForm.show = false">取 消</el-button>
+      <el-button type="warning" @click="sendEditForm">确 定</el-button>
+    </span>
+  </el-dialog>
 </div>

@@ -1,3 +1,69 @@
-<div class="fix">
-  Fix
+<div class="fix px-4 py-2">
+  <el-dialog
+    v-if="show"
+    v-loading="loading"
+    title="送出回報單"
+    :visible.sync="show"
+    width="30%"
+  >
+    <el-form ref="form" label-width="80px">
+      <el-form-item label="完成時間">
+        <el-date-picker
+          style="width:63%"
+          class="mr-1"
+          v-model="maintenance.time"
+          type="date"
+          placeholder="選擇日期"
+          :editable="false"
+          :clearable="false"
+          size="small"
+        >
+        </el-date-picker>
+        <el-time-picker
+          style="width:35%;min-width: 100px"
+          v-model="maintenance.time"
+          placeholder="選擇時間"
+          format="HH:mm"
+          :editable="false"
+          :clearable="false"
+          size="small"
+        >
+        </el-time-picker>
+      </el-form-item>
+      <el-form-item label="負責人">
+        <el-input v-model="maintenance.name"></el-input>
+      </el-form-item>
+    </el-form>
+
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="show = false">取 消</el-button>
+      <el-button
+        :disabled="maintenance.name.length==0"
+        type="warning"
+        @click="sendFixDataHandler"
+        >確 定</el-button
+      >
+    </span>
+  </el-dialog>
+
+  <el-table :data="deviceIsNotFixedList" style="width: 100%">
+    <el-table-column prop="mId" label="設備名稱" width="180"> </el-table-column>
+    <el-table-column sortable prop="status" label="保養/維修" width="120">
+    </el-table-column>
+    <el-table-column prop="note" label="備註" width="100"> </el-table-column>
+    <el-table-column sortable prop="registrationTime" label="通報時間">
+      <template slot-scope="scope">
+        <span style="margin-left: 10px">{{
+          scope.row.registrationTime | timeFormat
+        }}</span>
+      </template>
+    </el-table-column>
+    <el-table-column label="操作">
+      <template slot-scope="scope">
+        <el-button size="mini" type="warning" @click="fixedHandler(scope.row)"
+          >已{{ scope.row.status }}</el-button
+        >
+      </template>
+    </el-table-column>
+  </el-table>
 </div>

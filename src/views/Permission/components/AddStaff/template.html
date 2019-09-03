@@ -1,0 +1,79 @@
+<div class="addStaff">
+  <el-tooltip
+    class="item"
+    effect="dark"
+    content="新增成員"
+    placement="left-start"
+  >
+    <el-button
+      @click="show=true"
+      type="success"
+      icon="el-icon-plus"
+      circle
+    ></el-button>
+  </el-tooltip>
+  <el-dialog v-loading="loading" :visible.sync="show" width="30%">
+    <div class="text-left" slot="title">
+      <span
+        ><b
+          ><i class="el-icon-circle-plus-outline"></i> 新增員工
+          {{ staffData.name }}</b
+        ></span
+      >
+    </div>
+    <div style="padding:0 50px">
+      <el-form ref="form" label-width="85px">
+        <el-form-item label="姓名">
+          <el-input v-model="staffData.name"></el-input>
+        </el-form-item>
+        <el-form-item label="員工編號">
+          <el-input v-model="staffData.number"></el-input>
+        </el-form-item>
+        <el-form-item label="部門">
+          <el-input v-model="staffData.department"></el-input>
+        </el-form-item>
+        <el-form-item label="通行卡編號">
+          <el-input v-model="staffData.cardNumber"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <div
+            v-if="staffData.faceImagePath && staffData.faceImagePath!=''"
+            class="text-center"
+          >
+            <el-image
+              style="width:80%"
+              shape="square"
+              :src="staffData.faceImagePath.indexOf('base64')!=-1?staffData.faceImagePath:apiUrl + staffData.faceImagePath"
+              fit="cover"
+            ></el-image>
+            <div style=" margin-top:-22px">
+              <el-button
+                @click="staffData.faceImagePath=''"
+                style="width:80%;"
+                size="mini"
+                type="info"
+                >重新上傳</el-button
+              >
+            </div>
+          </div>
+          <div
+            v-show="!(staffData.faceImagePath&& staffData.faceImagePath!='')"
+          >
+            <input
+              ref="Upload"
+              type="file"
+              style="width:100%"
+              @change="uploadFaceImg"
+              :clearable="true"
+              accept="image/*"
+            />
+          </div>
+        </el-form-item>
+      </el-form>
+    </div>
+    <span slot="footer" class="dialog-footer">
+      <el-button @click="show = false">取 消</el-button>
+      <el-button type="warning" @click="sendAddForm">确 定</el-button>
+    </span>
+  </el-dialog>
+</div>

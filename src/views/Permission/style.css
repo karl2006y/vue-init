@@ -1,3 +1,4 @@
-.permission{
-  
+.staffsList {
+  overflow-y: scroll;
+  height: calc(100vh - 200px);
 }
