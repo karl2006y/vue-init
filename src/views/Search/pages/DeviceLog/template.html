@@ -1,0 +1,137 @@
+<div class="deviceLog">
+  <el-select v-model="chooseDevice" filterable placeholder="請選擇預查詢之設備">
+    <el-option
+      v-for="item in devicesList"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+    >
+    </el-option>
+  </el-select>
+  <el-date-picker
+    class="ml-2"
+    v-model="deviceLogTime"
+    type="date"
+    placeholder="請選擇查詢設備之日期"
+    style="width:140px"
+    :editable="false"
+  >
+  </el-date-picker>
+  <el-button
+    @click="getDeviceLog()"
+    class="ml-2"
+    type="info"
+    icon="el-icon-search"
+    >搜索</el-button
+  >
+  <hr />
+  <div v-if="loading===true" v-loading="loading" class="p-5"></div>
+  <div v-if="deviceLog.length!=0&&loading===false" style="display: flex">
+    <div id="deviceLogTimeLineOut">
+      <div id="deviceLogTimeLine">
+        <el-timeline>
+          <el-timeline-item
+            v-for="activity in deviceLog"
+            :key="activity.id"
+            :icon="activity.type | deviceTypeIcon"
+            :color="activity.status |deviceStatussColor"
+            :timestamp="activity.createdTime | timeFormat"
+          >
+            <h5>{{ activity.status | deviceStatus }}</h5>
+          </el-timeline-item>
+        </el-timeline>
+      </div>
+    </div>
+    <div class="w-75 mt-2">
+      <el-row class="text-center" :gutter="20">
+        <el-col :span="8">
+          <el-progress
+            :width="200"
+            :stroke-width="15"
+            type="circle"
+            :percentage="successPercentInLogs"
+            status="success"
+          ></el-progress>
+          正常運作 {{ successPercentInLogs }}%
+        </el-col>
+        <el-col :span="8">
+          <el-progress
+            :width="200"
+            :stroke-width="15"
+            type="circle"
+            :percentage="warningPercentInLogs"
+            status="warning"
+          ></el-progress>
+          待維修/保養 {{ warningPercentInLogs }}%
+        </el-col>
+        <el-col :span="8">
+          <el-progress
+            :width="200"
+            :stroke-width="15"
+            type="circle"
+            :percentage="dangerPercentInLogs"
+            status="exception"
+          ></el-progress>
+          設備異常 {{ dangerPercentInLogs }}%
+        </el-col>
+      </el-row>
+      <p class="px-3"></p>
+      <div class="pt-5" style="padding-left:80px;padding-right:80px;">
+        <div class="w-100 bg-info" style="display: flex">
+          <!-- 上午0:00 -->
+          <!-- <div style="flex-grow:0">
+            <el-tooltip
+              :visible-arrow="false"
+              manual
+              value
+              class="item"
+              effect="light"
+              content="上午0:00"
+              placement="left"
+            >
+              <div style="height:15px" class="py-2"></div>
+            </el-tooltip>
+          </div> -->
+          <!-- 甘特圖 -->
+          <div
+            :style="'flex-grow:'+item.long"
+            v-for="(item,index) in statusTimePercent"
+          >
+            <el-tooltip
+              manual
+              value
+              class="item"
+              effect="dark"
+              :content="'持續：' + Math.round(item.long/1000/60/60*100)/100 + ' 小時'"
+              :placement="index % 2 == 0?'top':'bottom'"
+            >
+              <div
+                :class="'bg-'+item.status"
+                style="height:15px"
+                class="py-2"
+              ></div>
+            </el-tooltip>
+            <!-- {{ new Date(item.createdTime).toLocaleTimeString() }} -->
+          </div>
+          <!-- 下午11:59 -->
+          <!-- <div style="flex-grow:0">
+            <el-tooltip
+              :visible-arrow="false"
+              manual
+              value
+              class="item"
+              effect="light"
+              content="下午11:59"
+              placement="right"
+            >
+              <div style="height:15px" class="py-2"></div>
+            </el-tooltip>
+          </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="text-center" v-if="deviceLog.length==0&&loading!='first'">
+    查無資料
+  </div>
+</div>

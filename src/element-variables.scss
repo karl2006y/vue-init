@@ -9,3 +9,11 @@ $--color-primary: red;
 $--font-path: '~element-ui/lib/theme-chalk/fonts';
 
 @import '~element-ui/packages/theme-chalk/src/index';
+.el-timeline-item__timestamp {
+  font-size: 24px;
+}
+.el-timeline-item__node {
+  left: -8px;
+  width: 24px;
+  height: 24px;
+}

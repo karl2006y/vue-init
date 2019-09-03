@@ -1,0 +1,12 @@
+.deviceLog {
+}
+#deviceLogTimeLine {
+  /* margin-top: 10px; */
+  height: calc(100vh - 252px);
+  width: 350px;
+  overflow-y: scroll;
+}
+#deviceLogTimeLineOut {
+  width: 345px;
+  overflow-x: hidden;
+}

@@ -1,3 +1,13 @@
-<div class="search">
-  Search
+<div class="search px-3 py-2">
+  <el-tabs v-model="activeName">
+    <el-tab-pane label="設備運轉紀錄" name="first">
+      <deviceLog v-if="activeName=='first'"></deviceLog>
+    </el-tab-pane>
+    <el-tab-pane label="人員進出設備之紀錄" name="second">
+      <passogDevice></passogDevice
+    ></el-tab-pane>
+    <el-tab-pane label="設備進出之人員紀錄" name="third">
+      <passLogPerson></passLogPerson>
+    </el-tab-pane>
+  </el-tabs>
 </div>
