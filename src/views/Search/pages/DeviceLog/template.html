@@ -18,6 +18,7 @@
   >
   </el-date-picker>
   <el-button
+    :disabled="chooseDevice==''||deviceLogTime==''"
     @click="getDeviceLog()"
     class="ml-2"
     type="info"
