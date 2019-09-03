@@ -1,3 +1,78 @@
 <div class="passLogDevice">
-  PassLogDevice
+  <el-select v-model="chooseDevice" filterable placeholder="請選擇預查詢之設備">
+    <el-option
+      v-for="item in DeviceList"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+    >
+    </el-option>
+  </el-select>
+  <el-date-picker
+    class="ml-2"
+    v-model="startLogTime"
+    type="date"
+    placeholder="開始日期"
+    style="width:140px"
+    :editable="false"
+  >
+  </el-date-picker>
+  <el-date-picker
+    class="ml-2"
+    v-model="endLogTime"
+    type="date"
+    placeholder="結束日期"
+    style="width:140px"
+    :editable="false"
+  >
+  </el-date-picker>
+  <el-button
+    :disabled="chooseDevice==''||startLogTime==''||endLogTime==''"
+    @click="getDeviceLog()"
+    class="ml-2"
+    type="info"
+    icon="el-icon-search"
+    >搜索</el-button
+  >
+  <hr />
+  <div v-loading="loading" v-if="loading" class="p-5"></div>
+  <div class="text-center" v-if="!loading&&DeviceLogList=='too many'">
+    查詢時間範圍過長，請縮短查詢時間範圍
+  </div>
+  <div class="text-center" v-if="!loading&&DeviceLogList=='no'">
+    查無資料
+  </div>
+  <div v-if="!loading&&DeviceLogList!='no'&&DeviceLogList.length!=0">
+    {{ DeviceLogList[0] }}
+    <el-table
+      :row-class-name="tableRowClassName"
+      :data="DeviceLogList"
+      style="width: 100%"
+    >
+      <el-table-column prop="id" label="id" width="150"> </el-table-column>
+      <el-table-column prop="mId" label="通過設備" width="250">
+        <template slot-scope="scope">
+          {{ scope.row.department }} - {{ scope.row.staffName }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" label="通過狀態" width="150">
+        <template slot-scope="scope">
+          <span :class="'text-'+ scope.row.status">●</span>
+          {{ scope.row.status | deviceStatus }}
+        </template>
+      </el-table-column>
+      <el-table-column sortable prop="createdTime" label="通過時間">
+        <template slot-scope="scope">
+          {{ scope.row.createdTime | timeFormat }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="deviceId" label="設備資料">
+        <template slot-scope="scope">
+          <router-link :to="{ path: 'permission/'+scope.row.staffId }"
+            >點擊查詢員工資訊</router-link
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+  </div>
 </div>

@@ -28,6 +28,11 @@ export default new Router({
           component: () => import('./views/Permission/index')
         },
         {
+          path: 'permission/:id',
+          name: '員工資料查詢',
+          component: () => import('./views/Permission/index')
+        },
+        {
           path: 'DeviceList',
           name: '資訊列表',
           component: () => import('./views/DeviceList/index')

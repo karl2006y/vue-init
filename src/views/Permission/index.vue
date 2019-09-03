@@ -24,7 +24,11 @@ export default {
     };
   },
   created() {
-    this.getStaffsList();
+    if (this.$route.name.indexOf("查詢") != -1) {
+      this.getOneStaffList();
+    } else {
+      this.getStaffsList();
+    }
   },
   watch: {
     "search.show"(val) {
@@ -93,6 +97,13 @@ export default {
       const URL = this.apiUrl + "api/Staffs";
       this.axios.get(URL).then(response => {
         this.staffsList = response.data;
+        this.loading = false;
+      });
+    },
+    getOneStaffList() {
+      const URL = this.apiUrl + "api/Staffs/" + this.$route.params.id;
+      this.axios.get(URL).then(response => {
+        this.staffsList.push(response.data);
         this.loading = false;
       });
     },
