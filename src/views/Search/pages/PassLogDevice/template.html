@@ -43,7 +43,6 @@
     查無資料
   </div>
   <div v-if="!loading&&DeviceLogList!='no'&&DeviceLogList.length!=0">
-    {{ DeviceLogList[0] }}
     <el-table
       :row-class-name="tableRowClassName"
       :data="DeviceLogList"
